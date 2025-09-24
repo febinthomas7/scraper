@@ -1,10 +1,10 @@
-Use a slim Python 3.9 image as the base
+# Use a slim Python 3.9 image as the base
 FROM python:3.9-slim
 
-Set the working directory
+# Set the working directory
 WORKDIR /app
 
-Install system dependencies for Playwright's browsers
+# Install system dependencies for Playwright's browsers
 RUN apt-get update -y &&
 
 apt-get install -y --no-install-recommends
@@ -85,17 +85,17 @@ libmanette-0.2-dev
 
 libgles2-mesa-dev
 
-Copy the requirements file and install Python packages
+# Copy the requirements file and install Python packages
 COPY requirements.txt . RUN pip install --no-cache-dir -r requirements.txt
 
-Install Playwright's browser binaries
+# Install Playwright's browser binaries
 RUN playwright install --with-deps chromium
 
-Copy the rest of your application code
+# Copy the rest of your application code
 COPY . .
 
-Expose the port FastAPI runs on
+# Expose the port FastAPI runs on
 EXPOSE 8000
 
-Command to run the application with Uvicorn
+# Command to run the application with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
