@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.log
+
+# Virtual environments
+venv/
+env/
+.env
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Selenium / ChromeDriver
+chromedriver*
+selenium.log
+
+# Build / Cache
+*.egg-info/
+dist/
+build/
