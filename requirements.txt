@@ -1,6 +1,4 @@
 fastapi
 uvicorn
-selenium
+playwright
 beautifulsoup4
-requests
-webdriver-manager
