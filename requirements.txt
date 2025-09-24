@@ -1,5 +1,4 @@
 fastapi
-uvicorn
-selenium
+uvicorn[standard]
 beautifulsoup4
-requests
+playwright
