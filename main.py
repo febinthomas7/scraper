@@ -1,25 +1,31 @@
 from fastapi import FastAPI
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
+from bs4 import BeautifulSoup
+import sys
+import traceback
 
 app = FastAPI()
 
+@app.get("/")
+def hello():
+    return {"message": "Hello, World!"}
+
 @app.get("/scrape")
 def scrape_who_news():
+    driver = None
     try:
         chrome_options = Options()
+        
+        if sys.platform == "linux":
+          chrome_options.binary_location = "/usr/bin/chromium"  # for Render/Linux
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--no-sandbox")  # needed on Linux servers like Render
         driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()), 
             options=chrome_options
         )
         driver.get("https://www.who.int/news")
@@ -37,7 +43,7 @@ def scrape_who_news():
         list_view_content = hub.find("div", class_="k-listview-content")
         news_divs = list_view_content.find_all("div", class_="list-view--item vertical-list-item")
         
-        articles = []
+        news = []
         for div in news_divs:
             a_tag = div.find("a")
             link =  a_tag.get("href") if a_tag and a_tag.get("href") else None
@@ -53,18 +59,18 @@ def scrape_who_news():
             heading_tag = div.find("p")
             heading = heading_tag.get_text(strip=True) if heading_tag else None
 
-            articles.append({
+            news.append({
                 "heading": heading,
                 "link": link,
                 "thumbnail": thumbnail,
                 "date": date,
             })
         
-        driver.quit()
-        return {"count": len(articles), "articles": articles}
+        return {"count": len(news), "news": news}
 
     except Exception as e:
-        return {"error": str(e)}
+            return {"error": str(e), "trace": traceback.format_exc()}
+       
     finally:
-        if driver:
+        if driver is not None:
             driver.quit()
