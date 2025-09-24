@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from bs4 import BeautifulSoup
 
 
 app = FastAPI()
@@ -14,10 +14,14 @@ app = FastAPI()
 @app.get("/scrape")
 def scrape_who_news():
     try:
+     # Selenium options
         chrome_options = Options()
+        chrome_options.binary_location = "/usr/bin/chromium"  # for Render
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--no-sandbox")  # needed on Linux servers like Render
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-extensions")
         driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()), 
             options=chrome_options
@@ -60,7 +64,6 @@ def scrape_who_news():
                 "date": date,
             })
         
-        driver.quit()
         return {"count": len(articles), "articles": articles}
 
     except Exception as e:
