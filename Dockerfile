@@ -5,9 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Install system dependencies for Playwright's browsers
-RUN apt-get update -y &&
-
-apt-get install -y --no-install-recommends
+RUN apt-get update -y && apt-get install -y --no-install-recommends
 
 libnss3
 
